@@ -1,5 +1,5 @@
-import { sign } from "jsonwebtoken";
-import type { ICredentialsForCreateToken, ITokenProvider } from "../ITokenProvider";
+import { sign, verify } from "jsonwebtoken";
+import type { ICredentialsForCheckValidToken, ICredentialsForCreateToken, ITokenProvider } from "../ITokenProvider";
 
 export class TokenProvider implements ITokenProvider {
     public async createToken(credential: ICredentialsForCreateToken): Promise<string> {
@@ -14,5 +14,15 @@ export class TokenProvider implements ITokenProvider {
         return tokenUser;
     }
 
-    public isValidToken: (token: string) => Promise<boolean>;
+    public async isValidToken(credentialsForCheckToken: ICredentialsForCheckValidToken): Promise<boolean> {
+        try {
+            verify(
+                credentialsForCheckToken.token,
+                credentialsForCheckToken.email
+            );
+            return true;
+        } catch {
+            return false;
+        }
+    }
 }
