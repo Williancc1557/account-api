@@ -16,6 +16,11 @@ export class CreateUserUserCase {
 
         const user = new User(data);
 
-        await this.userRepository.saveUser();
+        await this.userRepository.saveUser(user);
+
+        await this.createToken.createToken({
+            email: data.userEmail,
+            password: data.userPassword,
+        });
     }
 }
